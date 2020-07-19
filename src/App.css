@@ -16,6 +16,7 @@ body {
    height:4em;
    background-color:blue;
    background:linear-gradient(45deg,#a40977,#9419c4);
+   width:79em;
 }
 .App-logo{
    height:4em;
@@ -25,32 +26,32 @@ body {
 
 .Tab-container{
    display:grid;
-   grid-template-columns: auto auto auto;
+   grid-template-columns: 33% 33% 33%;
    justify-content:center;
    text-align:center;
    background:linear-gradient(45deg,#a40977,#9419c4);
    height:3em;
-   border:black solid .4em;
-   z-index:2;
+   width:79em;
+   z-index:1;
    
 }
 .Tab-element{
    text-align:center;
-   width:12.9em;
+   width:100%;
    text-align: center;
    margin-top:0em;
-   border:black solid .09em;
-   z-index:2;
+
+   z-index:1;
    font-size:2em;
  
 }
 .Selected{
       font-size:2em;
-   z-index:2;
-   width:12.9em;
+   z-index:1;
+   width:100%;
    text-align:center;
    margin-top:0em;
-   border:black solid .09em;
+   line-height:1.5em;
    background-color:#4d026b;
    color:white
  
@@ -321,7 +322,7 @@ input[type=number]{
 }
 .Receipt-Holder{
    border:black .3em solid;
-   width: auto;
+   width: 35em;
    margin-top:4em;
    background-color:white;
    align-content:left;
@@ -332,11 +333,11 @@ input[type=number]{
    margin-left:1em;
    margin-right:1em;
    word-break: break-word;
-   width:17em;
+   width:100%;
 }
 .Holds-Meta{
    display:grid;
-   grid-template-columns:12em 6em;
+   grid-template-columns: 70% 45%;
    
    justify-content:right;
    padding-right:1em
@@ -348,11 +349,17 @@ input[type=number]{
 }
 .Orders-Listing{
    display:grid;
-   grid-template-columns:14em 4em;
+
+}
+.Receipt-Item-container{
+   display:grid;
+   grid-template-columns:62% 25%;
+   
+   
 }
 .Contain-Total-Receipt{
    display:grid;
-   grid-template-columns:12em 5em;
+   grid-template-columns:35% 60%;
 }
 .Total-Receipt{
    grid-column:2/2;
