@@ -1,12 +1,8 @@
 import React from 'react';
 import Items from './allItems';
 //Meals
-let Item =Items('All');
-
-let Nums=[];
-for (let i=0;i<26;i++){
-   Nums.push(0);
-}
+const Item =Items('All');
+let Nums = Array.from(Array(26)).map(() => 0)
  //The menu
  
  class Orders extends React.Component{
@@ -35,12 +31,14 @@ for (let i=0;i<26;i++){
     handleSubmit = (e) =>{
        e.preventDefault();
      
-       let d = new Date();
-       let Month = (d.getMonth()+1 < 10)? '0'+(d.getMonth()+1): (d.getMonth()+1);
-       let Day = (d.getDate() < 10)? '0'+d.getDate(): d.getDate();
-       let Hours = (d.getHours() < 10)? '0'+d.getHours(): d.getHours();
-       let Minutes = (d.getMinutes() < 10)? '0'+d.getMinutes(): d.getMinutes();
-       let displayDate = d.getFullYear() + '-'+Month+'-'+Day+' '+Hours+':'+Minutes;
+       let date = new Date();
+       
+       const month = (date.getMonth() + 1).toString().padStart(2, '0');
+       const day = date.getDate().toString().padStart(2,0); 
+       const hours = date.getHours().toString().padStart(2,0); 
+       const minutes = date.getMinutes().toString().padStart(2,0); 
+       
+       let displayDate = `${date.getFullYear()}-${month}-${day}  ${hours}:${minutes}`;
        let OrderNumber = this.state.OrderNumber + 1;
        let OrderNumberShown = OrderNumber/1000000;
        OrderNumberShown = OrderNumberShown.toString()
@@ -77,18 +75,18 @@ for (let i=0;i<26;i++){
     }
     
     Reset = (e) =>{
-      
-       for(let i =0; i < Nums.length; i++){
-          Nums[i]=0;
-          e.target.parentElement.parentElement.children[i].lastChild.lastChild.value = "0";
-       }
+    
+      Nums.forEach((num, index) => {
+            Nums[index] = 0
+            e.target.parentElement.parentElement.children[index].lastChild.lastChild.value = '0' 
+        })
        this.setState({Nums:Nums})
     }
+    
     sendForm = () =>{
        let Nums = this.state.Nums;
-       let check = Nums.filter((vale)=>{
-          return vale > 0;
-       });
+       const check = Nums.filter((vale)=> vale > 0);
+       
       
       let Form = (check.length > 0)? 'Form-Space' : 'Invisible'
       let Order = (check.length > 0)? 'Invisible' : 'Order-Squares'
@@ -111,9 +109,7 @@ for (let i=0;i<26;i++){
        })
        
     }
-       
-       
-    
+
     backToOrder = () =>{
        this.setState({
             Form:'Invisible',
@@ -168,11 +164,11 @@ for (let i=0;i<26;i++){
     
       };
     render(){
-      let Total = 0;
-      this.state.Nums.forEach((Price)=>{
-         Total += Price;
-      })
-      Total = parseFloat(Total.toFixed(2));
+      const tempTotal = this.state.Nums.reduce((acumm,current) => {
+         return acumm + current
+      }, 0);
+      
+      const Total = parseFloat(tempTotal.toFixed(2));
       
        return(
      <div>
@@ -282,580 +278,62 @@ for (let i=0;i<26;i++){
       </div>
       
       {/* Order       */}
+      
+      
       <div className={this.state.Order}>
-      
-       <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[0].Name}</p>
-                  <p>{this.state.Items[0].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
+         {this.state.Items.slice(0,25).map((item,index)=> (
+            <div className="Order-Item" key={item.id}>
+                  <div className="Order-Square">
+                        <p>{item.Name}</p>
+                        <p>{item.Price}$ each</p>
+                  </div>
+
+                  <div className="Order-Amount">
+                        <input
                         type="number"
-                        name="Items[0]"
-                        min="0" 
+                        name={`Items[${index}]`}
+                        min="0"
                         max="20"
                         defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(0,e)}
-                  />
+                        onChange={(e) =>
+                              this.changesValuesOrder(index, e)
+                        }
+                        />
+                  </div>
             </div>
+         ))}
+            <div className="Order-Item-Last">
+                  <div className="Order-Square">
+                        <p>{this.state.Items[25].Name}</p>
+                        <p>{this.state.Items[25].Price}$ each</p>
+                  </div>
 
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[1].Name}</p>
-                  <p>{this.state.Items[1].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[1]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(1,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[2].Name}</p>
-                  <p>{this.state.Items[2].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[2]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(2,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[3].Name}</p>
-                  <p>{this.state.Items[3].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Item[3]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(3,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[4].Name}</p>
-                  <p>{this.state.Items[4].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Item[4]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(4,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[5].Name}</p>
-                  <p>{this.state.Items[5].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Item[5]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(5,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[6].Name}</p>
-                  <p>{this.state.Items[6].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Item[6]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(6,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[7].Name}</p>
-                  <p>{this.state.Items[7].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[7]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(7,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[8].Name}</p>
-                  <p>{this.state.Items[8].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[8]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(8,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[9].Name}</p>
-                  <p>{this.state.Items[9].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[9]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(9,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[10].Name}</p>
-                  <p>{this.state.Items[10].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[10]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(10,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[11].Name}</p>
-                  <p>{this.state.Items[11].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[11]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(11,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[12].Name}</p>
-                  <p>{this.state.Items[12].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[12]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(12,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[13].Name}</p>
-                  <p>{this.state.Items[13].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[13]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(13,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[14].Name}</p>
-                  <p>{this.state.Items[14].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[14]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(14,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[15].Name}</p>
-                  <p>{this.state.Items[15].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[15]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(15,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[16].Name}</p>
-                  <p>{this.state.Items[16].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[16]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(16,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[17].Name}</p>
-                  <p>{this.state.Items[17].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[17]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(17,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[18].Name}</p>
-                  <p>{this.state.Items[18].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[18]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(18,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[19].Name}</p>
-                  <p>{this.state.Items[19].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[19]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(19,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[20].Name}</p>
-                  <p>{this.state.Items[20].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[20]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(20,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[21].Name}</p>
-                  <p>{this.state.Items[21].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[21]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(21,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[22].Name}</p>
-                  <p>{this.state.Items[22].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[22]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(22,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[23].Name}</p>
-                  <p>{this.state.Items[23].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[23]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(23,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[24].Name}</p>
-                  <p>{this.state.Items[24].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
-                        type="number"
-                        name="Items[24]"
-                        min="0" 
-                        max="20"
-                        defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(24,e)}
-                  />
-            </div>
-
-      </div>
-      <div className="Order-Item-Last">
-      
-            <div className="Order-Square">
-                  <p>{this.state.Items[25].Name}</p>
-                  <p>{this.state.Items[25].Price}$ each</p>
-            </div>
-            
-            <div className="Order-Amount">
-                  <input 
+                  <div className="Order-Amount">
+                        <input
                         type="number"
                         name="Items[25]"
-                        min="0" 
+                        min="0"
                         max="20"
                         defaultValue="0"
-                        onChange={(e)=>this.changesValuesOrder(25,e)}
-                  />
+                        onChange={(e) =>
+                              this.changesValuesOrder(25, e)
+                        }
+                        />
+                  </div>
             </div>
-
-      </div>
-    
-      <div className="Order-Item-Total">
       
-      <h1 className={(Nums[0] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[0].Name} x{this.state.Items[0].Quantity}</h1>   
- 
-      <h1 className={(Nums[1] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[1].Name} x{this.state.Items[1].Quantity}</h1>   
-   
-   
-      <h1 className={(Nums[2] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[2].Name} x{this.state.Items[2].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[3] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[3].Name} x{this.state.Items[3].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[4] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[4].Name} x{this.state.Items[4].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[5] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[5].Name} x{this.state.Items[5].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[6] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[6].Name} x{this.state.Items[6].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[7] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[7].Name} x{this.state.Items[7].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[8] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[8].Name} x{this.state.Items[8].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[9] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[9].Name} x{this.state.Items[9].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[10] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[10].Name} x{this.state.Items[10].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[11] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[11].Name} x{this.state.Items[11].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[12] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[12].Name} x{this.state.Items[12].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[13] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[13].Name} x{this.state.Items[13].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[14] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[14].Name} x{this.state.Items[14].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[15] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[15].Name} x{this.state.Items[15].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[16] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[16].Name} x{this.state.Items[16].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[17] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[17].Name} x{this.state.Items[17].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[18] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[18].Name} x{this.state.Items[18].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[19] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[19].Name} x{this.state.Items[19].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[20] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[20].Name} x{this.state.Items[20].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[21] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[21].Name} x{this.state.Items[21].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[22] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[22].Name} x{this.state.Items[22].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[23] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[23].Name} x{this.state.Items[23].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[24] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[24].Name} x{this.state.Items[24].Quantity}</h1>
-   
-   
-      <h1 className={(Nums[25] === 0)? 'Invisible' : 'Listed'}> {this.state.Items[25].Name} x{this.state.Items[25].Quantity}</h1>
+      
+      <div className="Order-Item-Total">
+            {this.state.Items.map((Item, index) => (
+            <h1
+                  className={
+                        Nums[index] === 0 ? 'Invisible' : 'Listed'
+                  }
+            >
+                  {' '}
+                  {Item.Name} x{Item.Quantity}
+            </h1>
+            ))}
       
       <h1 className='Total'> Total: ${Total}</h1>
       <button className="Order-Boton1" onClick={this.sendForm}>Confirm</button>
@@ -883,129 +361,16 @@ for (let i=0;i<26;i++){
       <h1 className="Receipt-Item">Order:</h1> 
            
       <div className="Orders-Listing">
+      {this.state.Items.map((item,index) =>(
+      <div key = {item.id} className={(Nums[index] === 0)? 'Invisible' : 'Receipt-Item-container'}>
       
-          <h1 className={(Nums[0] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[0].Name}</h1>
-          <h1 className={(Nums[0] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[0].Price} x{this.state.Items[0].Quantity}</h1>   
+      <h1 className="Receipt-Item"> {item.Name}</h1>
       
-   
-   
-          <h1 className={(Nums[1] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[1].Name}</h1>
-          <h1 className={(Nums[1] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[1].Price} x{this.state.Items[1].Quantity}</h1>   
+      <h1 className="Receipt-Item"> 
+      ${item.Price} x{item.Quantity}</h1> 
       
-   
-   
-          <h1 className={(Nums[2] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[2].Name}</h1>
-          <h1 className={(Nums[2] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[2].Price} x{this.state.Items[2].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[3] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[3].Name}</h1>
-          <h1 className={(Nums[3] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[3].Price} x{this.state.Items[3].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[4] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[4].Name}</h1>
-          <h1 className={(Nums[4] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[4].Price} x{this.state.Items[4].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[6] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[6].Name}</h1>
-          <h1 className={(Nums[6] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[6].Price} x{this.state.Items[6].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[7] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[7].Name}</h1>
-          <h1 className={(Nums[7] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[7].Price} x{this.state.Items[7].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[8] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[8].Name}</h1>
-          <h1 className={(Nums[8] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[8].Price} x{this.state.Items[8].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[9] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[9].Name}</h1>
-          <h1 className={(Nums[9] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[9].Price} x{this.state.Items[9].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[10] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[10].Name}</h1>
-          <h1 className={(Nums[10] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[10].Price} x{this.state.Items[10].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[11] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[11].Name}</h1>
-          <h1 className={(Nums[11] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[11].Price} x{this.state.Items[11].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[12] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[12].Name}</h1>
-          <h1 className={(Nums[12] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[12].Price} x{this.state.Items[12].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[13] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[13].Name}</h1>
-          <h1 className={(Nums[13] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[13].Price} x{this.state.Items[13].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[14] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[14].Name}</h1>
-          <h1 className={(Nums[14] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[14].Price} x{this.state.Items[14].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[15] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[15].Name}</h1>
-          <h1 className={(Nums[15] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[15].Price} x{this.state.Items[15].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[16] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[16].Name}</h1>
-          <h1 className={(Nums[16] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[16].Price} x{this.state.Items[16].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[17] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[17].Name}</h1>
-          <h1 className={(Nums[17] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[17].Price} x{this.state.Items[17].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[18] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[18].Name}</h1>
-          <h1 className={(Nums[18] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[18].Price} x{this.state.Items[18].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[19] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[19].Name}</h1>
-          <h1 className={(Nums[19] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[19].Price} x{this.state.Items[19].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[20] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[20].Name}</h1>
-          <h1 className={(Nums[20] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[20].Price} x{this.state.Items[20].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[21] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[21].Name}</h1>
-          <h1 className={(Nums[21] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[21].Price} x{this.state.Items[21].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[22] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[22].Name}</h1>
-          <h1 className={(Nums[22] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[22].Price} x{this.state.Items[22].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[23] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[23].Name}</h1>
-          <h1 className={(Nums[23] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[23].Price} x{this.state.Items[23].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[24] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[24].Name}</h1>
-          <h1 className={(Nums[24] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[24].Price} x{this.state.Items[24].Quantity}</h1>   
-      
-   
-   
-          <h1 className={(Nums[25] === 0)? 'Invisible' : 'Receipt-Item'}> {this.state.Items[25].Name}</h1>
-          <h1 className={(Nums[25] === 0)? 'Invisible' : 'Receipt-Item'}> ${this.state.Items[25].Price} x{this.state.Items[25].Quantity}</h1>   
+      </div>
+      ))}
       </div>
 
      <div className="Contain-Total-Receipt"> 
