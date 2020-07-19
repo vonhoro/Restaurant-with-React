@@ -4,7 +4,9 @@ import deliver from './IMG/deliveryCar.jpeg';
 import './App.css';
 import Menu from './Menu';
 import Orders from './orderSystem';
+
 const Tab1 = (props)=>{
+
     return(
         <div className={props.tabState} id="Pres">
           <h1 className="title" > Us </h1>
@@ -22,7 +24,7 @@ const Tab1 = (props)=>{
    );
 }
 const Tab2 = (props) =>{
-   
+
    return(
           <div className = {props.tabState}>
              <Menu />
@@ -51,9 +53,9 @@ class Tab extends React.Component {
   constructor(props) {
     super(props);
     this.state ={
-        tab1:'Tab',
+        tab1:'Invisible',
         tab2:'Invisible',
-        tab3:'Invisible',
+        tab3:'Tab',
         TabH1:'Selected',
         TabH2:'Tab-element',
         TabH3:'Tab-element'
@@ -108,6 +110,7 @@ class Tab extends React.Component {
 function App() {
     return (
          < div className = "App" >
+            
              < header className = "App-header" >
              < img src = {
             logo
